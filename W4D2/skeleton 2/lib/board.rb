@@ -26,10 +26,34 @@ class Board
   end
 
   def make_move(start_pos, current_player_name)
+    stones = @cups[start_pos]
+    @cups[start_pos] = []
+    cup_i = start_pos
+
+    until stones.empty? #until the stones arr is empty
+      cup_i += 1
+      cup_i = 0 if cup_i > 13
+      if cup_i == 6 
+        @cups[6] << stones.shift if current_player_name == @name1
+      elsif cup_i == 13
+        @cups[13] << stones.shift if current_player_name == @name2
+      else
+        @cups[cup_i] << stones.shift
+      end
+    end
+    render 
+    next_turn(cup_i)
   end
 
   def next_turn(ending_cup_idx)
     # helper method to determine whether #make_move returns :switch, :prompt, or ending_cup_idx
+    if ending_cup_idx == 6 || ending_cup_idx == 13
+      :prompt
+    elsif @cups[ending_cup_idx].count ==1
+      :switch
+    else
+    ending_cup_idx
+    end
   end
 
   def render
@@ -41,8 +65,18 @@ class Board
   end
 
   def one_side_empty?
+    @cups.take(6).all? { |cup| cup.empty? } ||
+    @cups[7..12].all? { |cup| cup.empty? }
   end
 
   def winner
+    player1_count = @cups[6].count
+    player2_count = @cups[13].count
+
+    if player1_count == player2_count
+      :draw
+    else
+      player1_count > player2_count ? @name1 : @name2
+    end
   end
 end
