@@ -64,10 +64,16 @@ describe Dessert do
 
 
   describe "#serve" do
-    it "contains the titleized version of the chef's name"
+    it "contains the titleized version of the chef's name" do
+      allow(chef).to receive(:titleize).and_return("Chef Phil the Great Baker")
+      expect(flan.serve).to eq("Chef Phil the Great Baker has made 20 flans!")
+    end
   end
 
   describe "#make_more" do
-    it "calls bake on the dessert's chef with the dessert passed in"
+    it "calls bake on the dessert's chef with the dessert passed in" do 
+      expect(chef).to receive(:bake).with(flan)
+      flan.make_more
+    end
   end
 end
